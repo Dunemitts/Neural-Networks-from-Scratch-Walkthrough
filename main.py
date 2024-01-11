@@ -1,6 +1,32 @@
 import numpy as np
 
-inputs = [1, 2, 3, 2.5]
+np.random.seed(0)
+
+X = [[1, 2, 3, 2.5],
+    [2.0, 5.0, -1.0, 2.0],
+    [-1.5, 2.7, 3.3, -0.8]]
+
+class Layer_Dense:
+    def __init__(self, n_inputs, n_neurons): # n_inputs and n_neurons are taking in the batch size and how many neurons we want 
+        self.weights = 0.10 * np.random.randn(n_inputs, n_neurons) # Something like this: print(0.10 * np.random.randn(4, 3)) would print a matrix of 4 rows and 3 columns with a weight of 0.10
+        self.biases = np.zeros((1, n_neurons))
+    def forward(self, inputs):
+        self.output = np.dot(inputs, self.weights) + self.biases
+
+layer1 = Layer_Dense(4, 5) # With how the function is set up, the neurons can be anything, so I chose 5
+layer2 = Layer_Dense(5, 2) # With the second layer, the input HAS to be the same as the number of neurons chosen, so 5
+
+layer1.forward(X)
+print(layer1.output) # Gives us a matrix with 3 rows and 5 columns (3 rows because of the X input)
+layer2.forward(layer1.output)
+print(layer2.output) # Gives us our final 2 neurons at the end of the neural network with 3 columns (from X)
+
+
+'''
+Old Matrix Breakdown:
+inputs = [[1, 2, 3, 2.5],
+    [2.0, 5.0, -1.0, 2.0],
+    [-1.5, 2.7, 3.3, -0.8]]
 
 weights = [[0.2, 0.8, -0.5, 1.0],
            [0.5, -0.91, 0.26, -0.5],
@@ -8,50 +34,14 @@ weights = [[0.2, 0.8, -0.5, 1.0],
 
 biases = [2, 3, 0.5]
 
-output = np.dot(weights, inputs) + biases # The first element you pass in dot() will be how the output is "indexed", just trust me put weights first or you'll get an error
-print(output)
-'''
-np.dot breakdown.
-np.dot(weights, inputs) = [np.dot(weights[0], inputs), np.dot(weights[1], inputs), np.dot(weights[2], inputs)] = [2.8, -1.79, 1.885]
+weights2 = [[0.1, -0.14, 0.5],
+           [-.05, 0.12, -0.33],
+           [-0.44, 0.73, -0.13]]
 
-np.dot(weights, inputs) + biases = [2.8, -1.79, 1.885] + [2.0, 3.0, 0.5] = [4.8, 1.21, 2.385] which is the output
-'''
+biases2 = [-1, 2, -0.5]
 
-'''
-weight vs bias.
-some_value= -0.5
-weight = 0.7 # Changes magnitude
-bias = 0.7 # Offsets it
+layer1_output = np.dot(inputs, np.array(weights).T) + biases # Transposing the weights as without it, np.dot will try to multiply input's top horizontal row (3,4) with weight's left vertical row (4,3), transposing just makes it so that the weight's new left vertical row is (3,4) rather than (4,3)
+layer2_output = np.dot(layer1_output, np.array(weights2).T) + biases2 # layer1_output becomes the new input for the next layer
 
-print(some_value*weight) # Outputs -0.35 (keeps negative as it's changing the magnitude)
-print(some_value*bias) # Outputs 0.1999...6 (notice how bias makes it a positive number as it just offsets the output)
-'''
-
-'''
-Matrix ex.
-Array:
-lol = 
-[[1,5,6,2],
-[3,2,1,3]]
-
-Shape:
-(how many big lists in the lol, how many small lists in a big list, how many numbers in a single list)
-(1, 2, 4) # Usually wouldn't put 1 for the first number if there's only 1
-
-Type: 2D Array, Matrix
-
-3D Shape ex.
-Array: 
-lolol = 
-[[[1,5,6,2],
-[3,2,1,3]]
-[[5,2,1,2],
-[6,4,8,2]]
-[[2,8,5,3],
-[1,1,9,4]]]
-
-Shape:
-(3, 2, 4)
-
-Type: 3D Array
+print(layer2_output) # Outputs a (3,3) Matrix
 '''
